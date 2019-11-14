@@ -58,8 +58,4 @@ class Database{
 	public function close() {
 		return $this->connection->close();
 	}
-
-	public function affectedRows() {
-		return $this->query->affected_rows;
-	}
 }
