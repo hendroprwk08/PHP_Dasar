@@ -8,13 +8,15 @@ class Upload{
     public function __construct() {}
 
     public function uploadFile($file){
-        if ($file["size"] == 0) { //kalo filenya ga ada
+        $ukuran = $this->fileSize($file);
+
+        if ($ukuran == 0) { //kalo filenya ga ada
             $this->hasil = array("status" => "1", "info" => null); 
         }else{ //kalo filenya ada
             $target_file = $this->target_directory . basename($file["name"]);
 
             //ambil format file
-            $extention = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            $extention = $this->fileExtention($target_file);
         
             // jika file sudah ada
             if (file_exists($target_file)) {
@@ -22,7 +24,7 @@ class Upload{
             }
     
             // cek ukuran file
-            if ($file["size"] > $this->limit) {
+            if ($ukuran > $this->limit) {
                 $this->error = "ukuran file melebihi ". $this->limit . " byte";
             }
     
@@ -46,12 +48,15 @@ class Upload{
         return $this->hasil;
     }
 
+    public function fileExtention($file){
+        return strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    }
+
     public function fileSize($file){
         return $file["size"];
     }
 
     public function hapusFile($filename){
-        //die($this->target_directory.$filename);
         // jika file sudah ada
         if (file_exists($this->target_directory.$filename)) {
             unlink($this->target_directory.$filename);

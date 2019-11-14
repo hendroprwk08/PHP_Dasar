@@ -112,6 +112,11 @@
 
         header("location: pegawai.php?action=UBAH&id=".$_REQUEST['id']); //redirect ke posisi edit
     }elseif($action == "UPDATE"){ 
+        /* 
+        1. kalo ada file yang akan diupload, maka hapus dahulu file yang lama dan update data foto
+        2. jika tak ada yang diupload maka data foto jangan diupdate 
+        */
+
         //cek gambarnya sama ga? atau adakah file yang diunggah?
         $u = new Upload();
         $ukuran = $u->fileSize($_FILES["foto"]); //cek ukuran file
