@@ -44,7 +44,7 @@
     <input type="radio" name="lulusan" value="MA"> MA<br>
 
     <input type="submit" name="action" value="SIMPAN">
-    <input type="reset" name="reset" values="ULANGI">
+    <input type="reset" name="reset" value="ULANGI">
     </form>
     <h3>List Pegawai</h3>
     <table border="1">
@@ -198,7 +198,7 @@
         <input type="radio" name="lulusan" value="MA" <?php if ($result[0]['lulusan'] == "MA") print "checked" ?>> MA<br>
 
         <input type="submit" name="action" value="UPDATE">
-        <input type="reset" name="reset" values="ULANGI">
+        <input type="button" name="reset" value="KEMBALI" onClick='window.history.back()'>
         </form>
     
         <?php
