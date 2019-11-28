@@ -5,6 +5,8 @@
 <title>Data Pegawai</title>
 </head>
 <body>
+    <p><a href="#">Pegawai</a> | <a href="jabatan.php">Jabatan</a></p>
+
     <?php
     include "db.php"; 
     include "upload.php"; 
@@ -45,8 +47,7 @@
 
     <input type="submit" name="action" value="SIMPAN">
     <input type="reset" name="reset" value="ULANGI">
-    </form>
-    <h3>List Pegawai</h3>
+    </form><br/>
     <table border="1">
         <thead>
             <th width="150px">Nama</th>
