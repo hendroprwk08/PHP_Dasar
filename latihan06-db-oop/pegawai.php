@@ -45,6 +45,17 @@
     <input type="radio" name="lulusan" value="STM"> STM
     <input type="radio" name="lulusan" value="MA"> MA<br>
 
+    <label>Jabatan: </label>
+    <select name="jabatan">
+    <?php
+    $d = new Database();
+    $result = $d->getList("select idjabatan, jabatan from jabatan");
+    for ($i = 0; $i < count($result); $i++){ ?>
+    
+    <option value="<?= $result[$i][0] ?>"><?= $result[$i][1] ?></option>
+    <?php } ?>
+    </select><br/>
+
     <input type="submit" name="action" value="SIMPAN">
     <input type="reset" name="reset" value="ULANGI">
     </form><br/>
@@ -58,18 +69,21 @@
         <tbody>
         <?php 
         $d = new Database();
-        $result = $d->getList("select * from pegawai order by nama asc");
+        $sql = "select pegawai.idpegawai, pegawai.nama, pegawai.alamat, pegawai.jkelamin, "
+                ."pegawai.lulusan, pegawai.foto, jabatan.jabatan from pegawai inner join jabatan "
+                ."on pegawai.idjabatan = jabatan.idjabatan";
+        $result = $d->getList($sql);
         for ($i = 0; $i < count($result); $i++){
         ?>
         <tr>
             <td>
                 <?php if (!$result[$i]['foto'] == "") print "<img src='images/".$result[$i]['foto']. "' width='150px'/><br/>"; ?>
-                <b><?= $result[$i]['nama'] ?></b> - <?= $result[$i]['jkelamin'] ?>
+                <b><?= $result[$i]['nama'] ?></b> - <?= $result[$i]['jabatan'] ?><br/> <?= $result[$i]['jkelamin'] ?>
             </td>
             <td><?= $result[$i]['alamat'] ?></td>
             <td><?= $result[$i]['lulusan'] ?></td>
-            <td><a href="pegawai.php?action=UBAH&id=<?= $result[$i]['id_pegawai'] ?>">Ubah</a> | 
-                <a href="pegawai.php?action=HAPUS&foto=<?= $result[$i]['foto'] ?>&id=<?= $result[$i]['id_pegawai'] ?>">Hapus</a></td>
+            <td><a href="pegawai.php?action=UBAH&id=<?= $result[$i]['idpegawai'] ?>">Ubah</a> | 
+                <a href="pegawai.php?action=HAPUS&foto=<?= $result[$i]['foto'] ?>&id=<?= $result[$i]['idpegawai'] ?>">Hapus</a></td>
         </tr>        
         <?php } ?>
         </tbody>
@@ -84,9 +98,10 @@
             die ($hasil["info"]. "<p><a href='#' onClick='window.history.back()'>Coba lagi</a></p>");
         }else{
             $d = new Database();
-            $sql = "insert into pegawai (nama, alamat, jkelamin, lulusan, foto) " 
+            $sql = "insert into pegawai (nama, alamat, jkelamin, lulusan, foto, idjabatan) " 
                     ."values ('". $_REQUEST['nama'] ."', '". $_REQUEST['alamat'] ."', " 
-                    ."'". $_REQUEST['kelamin'] ."', '". $_REQUEST['lulusan'] ."', '". $hasil['info'] ."')";
+                    ."'". $_REQUEST['kelamin'] ."', '". $_REQUEST['lulusan'] ."', "
+                    ."'". $hasil['info'] ."', ". $_REQUEST['jabatan'] .")";
             $d->query($sql); 
             $d->close();
 
@@ -97,7 +112,7 @@
         $u->hapusFile($_REQUEST["foto"]);
 
         $d = new Database();
-        $sql = "delete from pegawai where id_pegawai = ". $_REQUEST['id'];
+        $sql = "delete from pegawai where idpegawai = ". $_REQUEST['id'];
         $d->query($sql); 
         $d->close();
 
@@ -107,7 +122,7 @@
         $u->hapusFile($_REQUEST["foto"]);
 
         $d = new Database();
-        $sql = "update pegawai set foto = null where id_pegawai = ". $_REQUEST['id'];
+        $sql = "update pegawai set foto = null where idpegawai = ". $_REQUEST['id'];
         $d->query($sql); 
         $d->close();
 
@@ -124,6 +139,7 @@
 
         $d = new Database();
 
+        //die($_REQUEST['jabatan'] );
         //cek ukuran kalo diatas 0 berarti ada file
         if ($ukuran > 0){ 
             
@@ -144,36 +160,39 @@
                         ."alamat = '". $_REQUEST['alamat'] ."', "
                         ."jkelamin = '". $_REQUEST['kelamin'] ."', "
                         ."lulusan = '". $_REQUEST['lulusan'] ."', "
-                        ."foto = '". $hasil['info'] ."' "
-                        ."where id_pegawai = ". $_REQUEST['tempID'];
+                        ."foto = '". $hasil['info'] ."', "
+                        ."idjabatan = ". $_REQUEST['jabatan'] ." "
+                        ."where idpegawai = ". $_REQUEST['tempID'];
             }
         } else{
             //update data kecuali fotonya
             $sql = "update pegawai set nama = '". $_REQUEST['nama'] ."', " 
                     ."alamat = '". $_REQUEST['alamat'] ."', "
                     ."jkelamin = '". $_REQUEST['kelamin'] ."', "
-                    ."lulusan = '". $_REQUEST['lulusan'] ."' "
-                    ."where id_pegawai = ". $_REQUEST['tempID'];
+                    ."lulusan = '". $_REQUEST['lulusan'] ."', "
+                    ."idjabatan = ". $_REQUEST['jabatan'] ." "
+                    ."where idpegawai = ". $_REQUEST['tempID'];
         }
         
+        //die($sql);
         $d->query($sql); 
         $d->close();
            
         header("location: pegawai.php"); //redirect
     }elseif($action == "UBAH"){ 
         $d = new Database();
-        $sql = "select * from pegawai where id_pegawai = ". $_REQUEST['id'];
+        $sql = "select * from pegawai where idpegawai = ". $_REQUEST['id'];
         
         $result = $d->getList($sql); ?>
 
         <h3>Data Pegawai</h3>
         <form enctype="multipart/form-data" method="post" action="<?php $_SERVER['PHP_SELF'] ?>">
-        <input type="hidden" name="tempID" value = "<?= $result[0]['id_pegawai'] ?>"/>
+        <input type="hidden" name="tempID" value = "<?= $result[0]['idpegawai'] ?>"/>
         <input type="hidden" name="tempFoto" value = "<?= $result[0]['foto'] ?>"/>
         
         <?php if (!$result[0]['foto'] == "") { ?>
-            <img src="images/<?= $result[0]['foto'] ?>" width="200px"/><br/> 
-            <a href="pegawai.php?action=HAPUSGAMBAR&foto=<?= $result[0]['foto'] ?>&id=<?= $result[0]['id_pegawai'] ?>">Hapus</a><br/> 
+            <img src="images/<?= $result[0]['foto'] ?>" width="200px"/><br/>
+            <a href="pegawai.php?action=HAPUSGAMBAR&foto=<?= $result[0]['foto'] ?>&id=<?= $result[0]['idpegawai'] ?>">Hapus</a><br/> 
         <?php } ?>
         
         <label>Foto: </label>
@@ -197,6 +216,23 @@
         <input type="radio" name="lulusan" value="SMK" <?php if ($result[0]['lulusan'] == "SMK") print "checked" ?>> SMK
         <input type="radio" name="lulusan" value="STM" <?php if ($result[0]['lulusan'] == "STM") print "checked" ?>> STM
         <input type="radio" name="lulusan" value="MA" <?php if ($result[0]['lulusan'] == "MA") print "checked" ?>> MA<br>
+
+        <label>Jabatan: </label>
+        <select name="jabatan">
+        <?php
+        $d = new Database();
+        $row = $d->getList("select idjabatan, jabatan from jabatan");
+        
+        for ($i = 0; $i < count($row); $i++){ 
+            //variable penampung jika nilai jabatan sama dengan option, 
+            //maka beri TANDA "SELECTED"
+            $select = ($result[0]['idjabatan'] == $row[$i][0]) ? "selected" : null; ?>
+
+            <option value="<?= $row[$i][0] ?>" <?= $select ?>><?= $row[$i][1] ?></option>
+             
+        <?php } ?>
+
+        </select><br/>
 
         <input type="submit" name="action" value="UPDATE">
         <input type="button" name="reset" value="KEMBALI" onClick='window.history.back()'>
