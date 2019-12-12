@@ -13,11 +13,13 @@ class Upload{
         if ($ukuran == 0) { //kalo filenya ga ada
             $this->hasil = array("status" => "1", "info" => null); 
         }else{ //kalo filenya ada
-            $target_file = $this->target_directory . basename($file["name"]);
+            //$target_file = $this->target_directory . basename($file["name"]);
+            
+            //rename file
+            $extention = $this->getFileExtention($file);
+            $newname = "img_". date("Ymd_His").".".$extention;
+            $target_file = $this->target_directory . $newname;
 
-            //ambil format file
-            $extention = $this->fileExtention($target_file);
-        
             // jika file sudah ada
             if (file_exists($target_file)) {
                 $this->error = "file sudah ada";
@@ -36,20 +38,21 @@ class Upload{
     
             // apakah ada error?
             if (strlen($this->error) > 0) {
-                $this->hasil = array("status" => "0", "info" => "Kesalahan: ".$this->error);
+                $this->hasil = array("status" => "0", "info" => "error : ".$this->error);
             } else { // jika tidak maka lanjutkan proses upload
                 if (move_uploaded_file($file["tmp_name"], $target_file)) {
-                    $this->hasil = array("status" => "1", "info" => basename( $file["name"])); 
+                    //$this->hasil = array("status" => "1", "info" => basename( $file["name"])); 
+                    $this->hasil = array("status" => "1", "info" => $newname); 
                 } else {
-                    $this->hasil = array("status" => "0", "info" => "Gagal upload: ".$this->error);
+                    $this->hasil = array("status" => "0", "info" => "Gagal upload");
                 }
             }
         }
         return $this->hasil;
     }
 
-    public function fileExtention($file){
-        return strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    public function getFileExtention($file){
+        return strtolower(end(explode(".", $file["name"])));
     }
 
     public function fileSize($file){
