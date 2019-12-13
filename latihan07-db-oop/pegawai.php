@@ -5,11 +5,20 @@
 <title>Data Pegawai</title>
 </head>
 <body>
-    <p><a href="#">Pegawai</a> | <a href="jabatan.php">Jabatan</a></p>
-
     <?php
     include "db.php"; 
-    include "upload.php"; 
+    include "upload.php";
+    include "session.php";
+
+    $s = new Session();
+    //jika session tak ditemukan, maka kembalikan ke halaman login
+    if (!$s->check("username")) header("location: login.php"); 
+    ?>
+
+    <p><b>Pegawai</b> | <a href="jabatan.php">Jabatan</a> | <a href="pengguna.php">Pengguna</a> | <a href="logout.php">Keluar</a></p>
+
+    <?php
+     
 
     $action = null;
 

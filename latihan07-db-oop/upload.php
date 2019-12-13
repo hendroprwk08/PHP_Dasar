@@ -5,8 +5,6 @@ class Upload{
     var $error; //penampung error
     var $hasil; 
 
-    public function __construct() {}
-
     public function uploadFile($file){
         $ukuran = $this->fileSize($file);
 

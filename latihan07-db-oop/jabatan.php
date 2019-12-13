@@ -5,11 +5,17 @@
 	<title>Data Jabatan</title>
 </head>
 <body>
-	<p><a href="pegawai.php">Pegawai</a> | <a href="#">Jabatan</a></p>
+	<?php
+	include "db.php";
+	include "session.php";
+
+    $s = new Session();
+    if (!$s->check("username")) header("location: login.php"); 
+    ?>
+
+	<p><a href="pegawai.php">Pegawai</a> | <b>Jabatan</b> | <a href="pengguna.php">Pengguna</a> | <a href="logout.php">Keluar</a></p>
 
 	<?php
-	include("db.php");
-	
 	/*
 	variable "status" u/ deteksi aksi : simpan, update & hapus
 	if menggunakan gaya satu baris karena hanya memiliki satu keputusan
