@@ -1,7 +1,7 @@
 <?php
 include "mobil-class.php"; 
 
-$mobil = new Mobil();
+$m = new Mobil(); //inisiasi / dibentuk
 
 $m->setMerek("Audi");
 $m->setCc(2400);

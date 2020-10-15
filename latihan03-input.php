@@ -23,8 +23,11 @@
 
     <?php } else { ?>
 
-    <p>Nama ku <?= $_REQUEST["nama"] ?>, aku berusia <?= $_REQUEST["usia"] ?> tahun, lulusan <?= $_REQUEST["lulus"] ?> </p>
-    <a href="latihan03-input.php">Kembali</a>
+    <p>Nama ku <?= $_REQUEST["nama"] ?>, 
+	aku berusia <?= $_REQUEST["usia"] ?> tahun, 
+	lulusan <?= $_REQUEST["lulus"] ?> </p>
+    
+	<a href="latihan03-input.php">Kembali</a>
 
     <?php } ?>
 </body>
