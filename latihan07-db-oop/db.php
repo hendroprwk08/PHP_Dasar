@@ -1,61 +1,67 @@
 <?php 
 class Database{
-    protected $connection;
-    protected $query;
-    protected $cdata = 0;
+    protected $mysqli;
     
     var $dbhost = 'localhost';
     var $dbuser = 'root';
     var $dbpass = '';
     var $dbname = 'db_HRD';
-    var $dbcharset = 'utf8';
 
-	public function __construct() {
-		$this->connection = new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
-        
-        if ($this->connection->connect_error) {
-			die('Failed to connect to MySQL - ' . $this->connection->connect_error);
+    /*
+     * 1. koneksi ke mysql.
+     * 2. eksekusi untuk insert, update dan delete.
+     * 3. ambil data berupa array.
+     * 4. tutup koneksi.
+     */
+    
+    public function __construct() {
+        #1. koneksi ke mysql
+        try {
+            $this->mysqli = new mysqli( 
+                                $this->dbhost,
+                                $this->dbuser,
+                                $this->dbpass,
+                                $this->dbname );
+        }catch (\Exception $e){
+            die('Error: '. $e->getMessage());
         }
-        
-		$this->connection->set_charset($this->dbcharset);
-	}
+    }
 	
-    public function query($query) {
-		if ($this->query = $this->connection->prepare($query)) {
-            
-            $this->query->execute();
-               
-            if ($this->query->errno) {
-				die('Unable to process MySQL query (check your params) - ' . $this->query->error);
-            }  
-        } else {
-            die('Unable to prepare statement (check your syntax) - ' . $this->connection->error);
+    public function exec( $q ){
+        try{
+            $this->mysqli->query( $q );
+            return true;
+        }catch (\Exception $e){
+            die('Error: '. $e->getMessage());
+            return false;
         }
     }
 
-    public function getList($query) {
-		if ($this->query = $this->connection->prepare($query)) {
-            
-            $this->query->execute();
-            $result =  $this->query->get_result();
-               
-            if ($this->query->errno) {
-				die('Unable to process MySQL query (check your params) - ' . $this->query->error);
-            }else{
-                $parameters = array();
-                
-                while ($row = $result->fetch_array()) {
-                  $parameters[] = $row;
+    public function getList( $q ) {
+        try{
+            $hasil = $this->mysqli->query( $q );
+ 
+            if ( $hasil->num_rows > 0 ): #jika jumlah data > 0
+                #konversi ke array
+                while ($row = $hasil->fetch_array()) {
+                    $rows[] = $row;
                 }
-                
-                return $parameters;
-            }
-        } else {
-            die('Unable to prepare statement (check your syntax) - ' . $this->connection->error);
+            else:
+                return array();
+            endif;
+            
+            return $rows;
+        }catch (\Exception $e){
+             die('Error: '. $e->getMessage());
         }
     }
 
-	public function close() {
-		return $this->connection->close();
-	}
+    public function close() {
+        try{
+            return $this->mysqli->close();
+        }catch (\Exception $e){
+            die('Error: '. $e->getMessage());
+            return false;
+        }
+    }
 }
