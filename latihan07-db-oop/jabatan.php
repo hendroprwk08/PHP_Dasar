@@ -9,10 +9,10 @@
 	include "db.php";
 	include "session.php";
 
-	$s = new Session();
+        $s = new Session();
 	$d = new Database(); //mengaktifkan class DB		
 	
-	//if (!$s->check("username")) 
+        //if (!$s->check("username")) 
 	//	header("location: login.php"); 
         ?>
 
@@ -32,6 +32,9 @@
             $d->exec($sql); //jalankan function query u/ eksekusi sql
 
             header("location: jabatan.php"); //redirect
+	elseif( $aksi == 'cari' ):
+            $s->set('cariJabatan', $_REQUEST['cari']);
+             header("location: jabatan.php"); //redirect
 	elseif( $aksi == 'pilih' ):
             $sql = "select * from jabatan where idjabatan = ".$_REQUEST['id'];
             $data = $d->getList($sql);
@@ -63,14 +66,27 @@
                     <label>Honor</label><input type="text" name="honor"/><br/>
                     <input type="submit" name="aksi" value="simpan"/>
                     <input type="reset" name="reset" value="Ulangi"/>
-            </form>';
+            </form><br/>';
+
+            #pencarian
+            echo '<form action="">
+                    <label>Pencarian </label><input type="text" size="7" name="cari" value="'. $s->read('cariJabatan') .'"/>
+                    <input type="submit" name="aksi" value="cari"/>
+            </form><br/>';
 
             #table
             echo '<table border="1">
                 <tr><td>ID</td><td>Jabatan</td><td>Honor</td><td>&nbsp;&nbsp;</td></tr>';
 		
             #munculkan data tabel jabatan disini
-            $sql = "select * from jabatan";
+            #jika session pencarian eksis, maka lalukan pencarian
+            if($s->check('cariJabatan')):
+                $sql = 'select * from jabatan where '
+                    . 'jabatan like "%'. $s->read('cariJabatan') .'%"';
+            else:
+                $sql = 'select * from jabatan';
+            endif;
+            
             $data = $d->getList($sql); //ambil data dan tampung pada $hasil
 
             for( $i = 0; $i < count( $data ) ; $i++ ):

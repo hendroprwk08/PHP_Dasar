@@ -40,7 +40,6 @@ class Database{
     public function getList( $q ) {
         try{
             $hasil = $this->mysqli->query( $q );
- 
             if ( $hasil->num_rows > 0 ): #jika jumlah data > 0
                 #konversi ke array
                 while ($row = $hasil->fetch_array()) {
