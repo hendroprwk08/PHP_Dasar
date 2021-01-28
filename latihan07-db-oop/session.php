@@ -12,13 +12,19 @@ class Session{
     }
 
     public function read($nama){
-        return $_SESSION[$nama]; 
+        if($this->check($nama)){
+            return $_SESSION[$nama]; 
+        }
+
+        return false;
     }
 
     public function check($nama){
-        if (strlen($_SESSION[$nama]) > 0 ){
-            return true;
-        }
+        if(isset($_SESSION[$nama])){
+            if (strlen($_SESSION[$nama]) > 0 ){
+                return true;
+            }
+        }   
 
         return false;
     }

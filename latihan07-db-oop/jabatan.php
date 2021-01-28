@@ -80,7 +80,7 @@
 		
             #munculkan data tabel jabatan disini
             #jika session pencarian eksis, maka lalukan pencarian
-            if($s->check('cariJabatan')):
+            if($s->check('cariJabatan') ):
                 $sql = 'select * from jabatan where '
                     . 'jabatan like "%'. $s->read('cariJabatan') .'%"';
             else:
