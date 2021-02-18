@@ -5,7 +5,7 @@ class Database{
     var $dbhost = 'localhost';
     var $dbuser = 'root';
     var $dbpass = '';
-    var $dbname = 'db_HRD';
+    var $dbname = 'db_hrd';
 
     /*
      * 1. koneksi ke mysql.

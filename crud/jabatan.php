@@ -24,13 +24,14 @@ variable "status" u/ deteksi aksi : simpan, update & hapus
 if menggunakan gaya satu baris karena hanya memiliki satu keputusan
 opsional sih...
 */
+
 $aksi = (! isset( $_REQUEST[ 'aksi' ] ) ) ? null : $_REQUEST[ 'aksi' ]; 
 
 if ( $aksi == 'SIMPAN' ):
     $sql = "insert into jabatan (jabatan, honor) values ( "
             ."'".$_REQUEST['jabatan']."', ".$_REQUEST['honor'].")";
+    
     $d->exec($sql); //jalankan function query u/ eksekusi sql
-
     header("location: jabatan.php"); //redirect
 elseif( $aksi == 'CARI' ):
     $s->set('cariJabatan', $_REQUEST['cari']);
@@ -40,7 +41,7 @@ elseif( $aksi == 'PILIH' ):
     $data = $d->getList($sql);
 
     #edit form
-    echo '<form action ="#" method="post">
+    echo '<form action ="#" method="POST">
             <input type="hidden" name="id" value="'. $data[ 0 ][ 'idjabatan' ] .'" />
             <label>Jabatan</label><input type="text" name="jabatan" value="'. $data[ 0 ][ 'jabatan' ] .'" /><br/>
             <label>Honor</label><input type="text" name="honor" value="'. $data[ 0 ][ 'honor' ] .'" /><br/>
@@ -81,12 +82,12 @@ else: #tampilkan html
     #munculkan data tabel jabatan disini
     #jika session pencarian eksis, maka lalukan pencarian
     if($s->check('cariJabatan') ):
-    $sql = 'select * from jabatan where '
-            . 'jabatan like "%'. $s->read('cariJabatan') .'%"';
+        $sql = 'select * from jabatan where '
+                . 'jabatan like "%'. $s->read('cariJabatan') .'%"';
     else:
-    $sql = 'select * from jabatan';
+        $sql = 'select * from jabatan';
     endif;
-
+    
     $data = $d->getList($sql); //ambil data dan tampung pada $hasil
 
     for( $i = 0; $i < count( $data ) ; $i++ ):
