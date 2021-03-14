@@ -106,7 +106,7 @@ else: #tampilkan html
 
     #munculkan data tabel jabatan disini
     #jika session pencarian eksis, maka lalukan pencarian
-    if($s->check('cariJabatan') ):
+    if($s->check('cariPegawai') ):
         $sql = 'select * from v_pegawai where '
                 . 'nama like "%'. $s->read('cariPegawai') .'%"';
     else:
